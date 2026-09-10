@@ -1,0 +1,71 @@
+# AULA 4 - DIAGRAMAS UML
+## Tabela utilizada como "guia".
+
+| Etapa | Ação do estudante | Evidência esperada |
+|---|---|---|
+| 1 | Modelar as entidades do domínio (Pessoa, Aluno, Professor, Turma, Disciplina, Matricula) como classes UML, com atributos e visibilidade. | Diagrama de classes com os três compartimentos e símbolos de visibilidade (+, -, #). |
+| 2 | Representar a herança entre Pessoa e suas especializações (Aluno, Professor). | Notação de generalização (triângulo vazio, linha cheia) correta. |
+| 3 | Representar Turma contendo Aluno com a relação e a multiplicidade adequadas. | Agregação ou composição com multiplicidade (ex.: 1..*) nas extremidades. |
+| 4 | Introduzir a interface Desconto e ligá-la às implementações por realização. | Estereótipo «interface» e seta de realização (triângulo vazio, linha tracejada). |
+| 5 | Desenhar um diagrama de sequência para o cálculo da mensalidade. | Sequência de mensagens consistente, com chamadas e retornos. |
+
+## O diagrama UML em questão:
+
+```mermaid
+classDiagram
+    class Matricula {
+        -Aluno aluno
+        -double valorBase
+        -Desconto desconto
+        -SaveExterno gravador
+        +calcularMensalidade() double
+        +salvar() void
+    }
+    class Aluno {
+        -String nome
+        -String matricula
+        +getNome() String
+        +isBolsista() boolean
+    }
+    class Desconto {
+        <<interface>>
+        +aplicar(valorBase double) double
+    }
+    class SaveExterno {
+        <<interface>>
+        +gravar(dados String) void
+    }
+    class SemDesconto {
+        +aplicar(valorBase double) double
+    }
+    class DescontoBolsista {
+        +aplicar(valorBase double) double
+    }
+    class DescontoConvenio {
+        +aplicar(valorBase double) double
+    }
+    class DescontoFuncionario {
+        +aplicar(valorBase double) double
+    }
+    class GravadorMySQL {
+        +gravar(dados String) void
+    }
+    class FormatacaoRelatorio {
+        +formatar(alunos List~Aluno~) String
+    }
+    class PersistenciaRelatorio {
+        +salvarEmArquivo(conteudo String, caminho String) void
+    }
+    class ComunicacaoRelatorio {
+        +enviarPorEmail(conteudo String, destinatario String) void
+    }
+    Desconto <|.. SemDesconto
+    Desconto <|.. DescontoBolsista
+    Desconto <|.. DescontoConvenio
+    Desconto <|.. DescontoFuncionario
+    SaveExterno <|.. GravadorMySQL
+    Aluno "1" --> "0" Matricula
+    Matricula "1" --> "1" Desconto
+    Matricula "1" --> "1" SaveExterno
+    FormatacaoRelatorio ..> Aluno
+    ```
